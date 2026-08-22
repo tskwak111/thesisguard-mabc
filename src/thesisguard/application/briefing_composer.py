@@ -26,18 +26,29 @@ NO_CHANGE_HEADLINE: Final[str] = "오늘 투자논지를 변경할 만한 새로
 
 
 def _stock_section(sb: StockBriefing) -> list[str]:
+    is_watch = sb.kind == "WATCH"
     lines = [f"### {sb.stock_name} — {sb.state.korean}"]
+    if sb.previous_state_label:
+        lines.append(f"- 상태 변화: {sb.previous_state_label}")
+    if sb.condition_access:
+        lines.append(f"- 관심 조건 접근 여부: {sb.condition_access}")
     if sb.facts:
         for fact in sb.facts:
             lines.append(f"- 확인된 사실: {fact}")
+    elif is_watch:
+        lines.append("- 새롭게 달라진 항목: 없음")
     else:
         lines.append(
-            "- 확인된 사항: 오늘 투자논지를 변경할 만한 새로운 증거는 확인되지 않았습니다."
+            "- 확인된 사실: 오늘 투자논지를 변경할 만한 새로운 증거는 확인되지 않았습니다."
         )
-    if sb.thesis_impact:
-        lines.append(f"- 투자논지 영향: {sb.thesis_impact}")
-    for note in sb.opposing_notes:
-        lines.append(f"- 반대 또는 제한 증거: {note}")
+    if sb.thesis_impact and not is_watch:
+        lines.append(f"- 투자논지 영향(해석): {sb.thesis_impact}")
+    opposing = (
+        "; ".join(sb.opposing_notes)
+        if sb.opposing_notes
+        else "오늘 자료 범위 내에서는 확인되지 않았습니다"
+    )
+    lines.append(f"- 반대 또는 제한 증거: {opposing}")
     for item in sb.next_check_items:
         lines.append(f"- 다음 확인 항목: {item}")
     if sb.source_ids:

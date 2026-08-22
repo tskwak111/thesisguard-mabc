@@ -82,7 +82,20 @@ def _valid_pack_dict() -> dict[str, Any]:
                 ],
                 "tracked_indicators": [],
                 "risk_factors": ["ai_theme", "long_term_rate"],
-            }
+            },
+            {
+                "stock_code": "B000000",
+                "stock_name": "가상배터리보통주",
+                "summary": "ESS 수요 확대 논지",
+                "approved_version": "v1",
+                "core_assumptions": [
+                    {
+                        "id": "ASM-B1",
+                        "text": "ESS 설비투자가 증가한다.",
+                        "concept_tags": ["ess_capex"],
+                    }
+                ],
+            },
         ],
         "previous_states": [
             {
@@ -194,3 +207,16 @@ class TestRequiredInputValidation:
         report = validate_pack(pack)
         assert report.errors == []
         assert any(w.source_id == "R001" for w in report.warnings)
+
+
+class TestThesisCardCoverage:
+    def test_portfolio_stock_without_thesis_card_asks_question(self) -> None:
+        data = _valid_pack_dict()
+        data["portfolio"].append(
+            {"stock_code": "C000000", "stock_name": "가상바이오", "kind": "WATCH"}
+        )
+        pack = parse_pack(data)
+        report = validate_pack(pack)
+        assert report.errors == []
+        assert any("C000000" in q for q in report.questions)
+        assert len(report.questions) <= MAX_QUESTIONS

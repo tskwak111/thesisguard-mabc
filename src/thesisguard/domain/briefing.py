@@ -54,11 +54,14 @@ class StockBriefing(BaseModel):
     stock_name: str
     kind: str
     state: ThesisState
+    previous_state_label: str | None = None
     facts: tuple[str, ...] = ()
     thesis_impact: str | None = None
-    opposing_notes: tuple[str, ...] = ()
+    condition_access: str | None = None
     next_check_items: tuple[str, ...] = ()
     source_ids: tuple[str, ...] = ()
+    opposing_notes: tuple[str, ...] = ()
+    evidence_ids: tuple[str, ...] = ()
 
 
 class RiskBrief(BaseModel):

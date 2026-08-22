@@ -6,8 +6,6 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Final
 
-from pydantic import BaseModel, ConfigDict
-
 from thesisguard.adapters.fixture_analysis_engine import FixtureAnalysisEngine
 from thesisguard.application.audit_ledger import (
     AuditLedger,
@@ -42,6 +40,7 @@ from thesisguard.domain.events import NormalizedEvent
 from thesisguard.domain.pack import DailyEvidencePack
 from thesisguard.domain.sources import SourceDocument
 from thesisguard.domain.state import PreviousState
+from thesisguard.errors import ThesisGuardError
 from thesisguard.ports.analysis_engine import AnalysisEngine
 from thesisguard.safety.prompt_injection import detect_injection_spans, redact_injections
 
@@ -64,7 +63,17 @@ def _buy_sell_refusal(question: str) -> str:
     return f"사용자 질문({question.strip()})에 대하여: {BUY_SELL_REFUSAL}"
 
 
-class OrchestratorError(Exception):
+def _is_advice_question(question: str) -> bool:
+    """True when the user asks for buy/sell/timing advice rather than information."""
+    from thesisguard.safety.prohibited_advice import scan_prohibited_advice
+
+    return any(
+        hit.category.value in {"BUY_SELL_ORDER", "ALLOCATION_ADVICE", "TARGET_PRICE"}
+        for hit in scan_prohibited_advice(question)
+    )
+
+
+class OrchestratorError(ThesisGuardError):
     pass
 
 
@@ -75,13 +84,6 @@ class OrchestratorResult:
     audit: AuditLedger
     used_sources: list[SourceDocument]
     validation_issues: tuple[str, ...]
-
-
-class RunArtifacts(BaseModel):
-    model_config = ConfigDict(frozen=True)
-
-    payload_json: str
-    payload_md: str
 
 
 def _prev_state_for(pack: DailyEvidencePack, stock_code: str) -> PreviousState | None:
@@ -101,11 +103,11 @@ def _novelty_resolver(pack: DailyEvidencePack) -> Callable[[NormalizedEvent], No
             if code:
                 target_code = code
                 break
-        prev = None
-        if target_code:
-            prev = _prev_state_for(pack, target_code)
-        elif pack.previous_states:
-            prev = pack.previous_states[0]
+        if target_code is None:
+            # Without a matching position we cannot verify repeats against the right
+            # previous state; treating as NEW is the conservative default.
+            return Novelty.NEW
+        prev = _prev_state_for(pack, target_code)
         return classify_novelty(event, prev, pack.briefing_as_of)
 
     return resolve
@@ -168,6 +170,7 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
         flag for source in pack.today_sources for flag in detect_injection_spans(source.body)
     )
     draft_claims: list[FactClaim] = []
+    fact_rows: list[tuple[str, str]] = []
     cited_keys: list[str] = []
     key_changes: list[KeyChange] = []
     ranked = sorted(
@@ -198,6 +201,8 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
         )
         draft_claims.append(claim)
         cited_keys.append(link.event_key)
+        # per-stock fact text without the issuer prefix (redundant inside a stock section)
+        fact_rows.append((link.stock_code, event.action))
         key_changes.append(
             KeyChange(
                 description=f"{statement} — 논지 {_DIRECTION_KOREAN[link.direction]} 신호",
@@ -249,10 +254,25 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
     else:
         final_decisions = decisions
 
-    # Step 8: portfolio common risks
+    # Step 8: portfolio common risks (evidence links + adverse market context)
     context_links = [link for link in relevant_links if link.relevance is Relevance.CONTEXT]
+    adverse_market_tags: set[str] = set()
+    market_sources_by_tag: dict[str, tuple[str, ...]] = {}
+    for mc_item in pack.market_context:
+        if mc_item.change_direction == PolarityHint.NEGATIVE:
+            for tag in mc_item.risk_factor_tags:
+                adverse_market_tags.add(tag)
+                market_sources_by_tag.setdefault(tag, ())
+                sources_for_tag = market_sources_by_tag[tag]
+                if mc_item.source_id not in sources_for_tag:
+                    market_sources_by_tag[tag] = (*sources_for_tag, mc_item.source_id)
     exposures = map_common_risks(
-        list(pack.portfolio), list(cards.values()), context_links, pack.briefing_as_of
+        list(pack.portfolio),
+        list(cards.values()),
+        context_links,
+        pack.briefing_as_of,
+        adverse_market_tags=frozenset(adverse_market_tags),
+        market_sources_by_tag=market_sources_by_tag,
     )
     risk_briefs = [
         RiskBrief(
@@ -273,14 +293,7 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
 
             state = ThesisState.MAINTAIN
         card = cards.get(card_stock)
-        facts = [
-            c.statement
-            for c in draft_claims
-            if any(
-                link.stock_code == card_stock and c.claim_id.endswith(link.evidence_id)
-                for link in ranked
-            )
-        ]
+        facts = [stmt for code, stmt in fact_rows if code == card_stock]
         impact = None
         if state.value == "STRENGTHENED":
             impact = "핵심 가정을 지지하는 신규 증거가 확인되었습니다."
@@ -293,17 +306,37 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
         elif state.value == "HOLD":
             impact = "증거 충돌 또는 정보 부족으로 판단을 보류합니다."
         opposing = opposing_by_stock.get(card_stock, [])
-        next_checks = ([el.text for el in card.tracked_indicators] if card else []) or [
-            "기존 추적 항목 재확인"
-        ]
+        next_checks: list[str] = []
+        if card:
+            next_checks += [el.text for el in card.tracked_indicators]
+            next_checks += [el.text for el in card.review_conditions][:2]
+            next_checks += [el.text for el in card.strengthen_conditions][:1]
+        next_checks = next_checks or ["차기 실적·공시 일정 확인"]
+        prev = _prev_state_for(pack, card_stock)
+        prev_label = (
+            f"{prev.state.korean} → {state.korean}"
+            if prev is not None and prev.state is not None and prev.state != state
+            else (f"첫 실행 → {state.korean}" if prev is not None and prev.state is None else None)
+        )
+        condition_access = None
+        if kind == PositionKind.WATCH:
+            condition_access = (
+                "오늘 자료에서 조건 접근 신호는 확인되지 않았습니다"
+                if not facts
+                else "강화 조건 관련 신규 신호가 있으니 상태 섹션을 확인하세요"
+            )
         return StockBriefing(
             stock_code=card_stock,
             stock_name=item.stock_name if item else card_stock,
             kind=kind.value,
             state=state,
+            previous_state_label=prev_label,
             facts=tuple(redact_injections(f) for f in facts),
             thesis_impact=impact,
-            opposing_notes=(tuple(f"반대 증거 존재: {', '.join(opposing)}") if opposing else ()),
+            condition_access=condition_access,
+            opposing_notes=(
+                tuple(f"반대 증거: {', '.join(opposing)}" for _ in [0]) if opposing else ()
+            ),
             next_check_items=tuple(next_checks),
             source_ids=tuple(
                 dict.fromkeys(
@@ -312,6 +345,9 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
                     if kc.stock_code == card_stock
                     for sid in kc.source_ids
                 )
+            ),
+            evidence_ids=tuple(
+                link.evidence_id for link in ranked if link.stock_code == card_stock
             ),
         )
 
@@ -330,7 +366,10 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
     for d in final_decisions:
         if d.new_state.value == "HOLD":
             hold_items.append(f"{d.stock_code}: " + ("; ".join(d.hold_reasons) or "판단 보류"))
-    if pack.user_question:
+    for finding in review.findings:
+        if finding.severity == "WARNING" and finding.code != "OPPOSING_EVIDENCE_HIDDEN":
+            hold_items.append(f"검토 필요({finding.code}): {finding.message}")
+    if pack.user_question and _is_advice_question(pack.user_question):
         hold_items.append(_buy_sell_refusal(pack.user_question))
 
     unconfirmed = [s.source_id for s in pack.today_sources if s.tier == SourceTier.D]
@@ -351,10 +390,23 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
         data_as_of=pack.briefing_as_of,
     )
 
+    def _portfolio_headline() -> str:
+        if not key_changes:
+            return NO_CHANGE_HEADLINE
+        all_briefs = list(holdings) + list(watchlist)
+        changed = [sb for sb in all_briefs if sb.previous_state_label]
+        base = f"포트폴리오 핵심 변화 {len(key_changes)}건"
+        if changed:
+            labels = ", ".join(f"{sb.stock_name} {sb.previous_state_label}" for sb in changed[:3])
+            base += f" — {labels}"
+        else:
+            base += " — 상태 변화 없음"
+        return base
+
     report = BriefingReport(
-        briefing_id=make_briefing_id(pack.briefing_as_of.isoformat(), draft.headline),
+        briefing_id=make_briefing_id(pack.briefing_as_of.isoformat(), _portfolio_headline()),
         as_of=pack.briefing_as_of,
-        headline=draft.headline,
+        headline=_portfolio_headline(),
         no_change=not key_changes,
         key_changes=tuple(key_changes),
         holdings=tuple(holdings),
@@ -425,6 +477,3 @@ class Orchestrator:
 
     def run(self, pack: DailyEvidencePack) -> OrchestratorResult:
         return run_analysis(pack, self.engine)
-
-
-_POLARITY_FALLBACK = PolarityHint.UNKNOWN

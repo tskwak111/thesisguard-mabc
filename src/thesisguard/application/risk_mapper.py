@@ -59,6 +59,8 @@ def map_common_risks(
     thesis_cards: list[ThesisCard],
     context_links: list[EvidenceLink],
     briefing_as_of: datetime,  # noqa: ARG001 reserved for time-aware rules
+    adverse_market_tags: frozenset[str] | set[str] = frozenset(),
+    market_sources_by_tag: dict[str, tuple[str, ...]] | None = None,
 ) -> list[RiskExposure]:
     name_by_code = {p.stock_code: p.stock_name for p in positions}
     codes_by_factor: dict[str, list[str]] = {}
@@ -79,18 +81,26 @@ def map_common_risks(
             if p.stock_code in codes and p.kind == PositionKind.HOLDING and p.weight is not None
         ]
         total_weight = round(sum(holding_weights), 2) if holding_weights else None
-        deteriorating = any(
-            link.novelty in {Novelty.NEW, Novelty.UPDATE}
-            and link.direction in {EvidenceDirection.WEAKEN, EvidenceDirection.MIXED}
-            and factor in link.matched_concepts
-            and link.relevance is Relevance.CONTEXT
-            for link in context_links
+        deteriorating = (
+            any(
+                link.novelty in {Novelty.NEW, Novelty.UPDATE}
+                and link.direction in {EvidenceDirection.WEAKEN, EvidenceDirection.MIXED}
+                and factor in link.matched_concepts
+                and link.relevance is Relevance.CONTEXT
+                for link in context_links
+            )
+            or factor in adverse_market_tags
         )
         level = _level(len(codes), total_weight)
         names = [name_by_code.get(c, c) for c in codes]
-        weight_note = f", 보유 비중 합계 {total_weight:.0f}%" if total_weight is not None else ""
-        rationale = f"{len(codes)}개 종목({', '.join(names)})이 동일 위험요인 '{factor}'에 노출되어 있습니다{weight_note}."
-        if deteriorating:
+        weight_note = (
+            f" 보유 비중 합계는 {total_weight:.0f}%입니다." if total_weight is not None else ""
+        )
+        rationale = f"{len(codes)}개 종목({', '.join(names)})이 동일 위험요인 '{factor}'에 노출되어 있습니다.{weight_note}"
+        market_sources = (market_sources_by_tag or {}).get(factor)
+        if market_sources and factor in adverse_market_tags:
+            rationale += f" 시장 맥락에서 오늘 악화 신호가 확인되었습니다(근거: {', '.join(market_sources)})."
+        elif deteriorating:
             rationale += " 오늘 신규 악화 신호가 확인되었습니다."
         exposures.append(
             RiskExposure(

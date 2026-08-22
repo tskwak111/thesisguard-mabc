@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict
 
+from thesisguard.domain.enums import PolarityHint
 from thesisguard.domain.portfolio import PortfolioItem
 from thesisguard.domain.sources import SourceDocument
 from thesisguard.domain.state import PreviousState
@@ -20,6 +21,8 @@ class MarketContextItem(BaseModel):
     as_of: AwareDatetime
     source_id: str
     risk_factor_tags: tuple[str, ...] = ()
+    """Qualitative direction supplied by the pack author; UNKNOWN is never inferred."""
+    change_direction: PolarityHint = PolarityHint.UNKNOWN
 
 
 class DailyEvidencePack(BaseModel):

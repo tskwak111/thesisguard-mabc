@@ -30,4 +30,8 @@
 | 결선 확장 경계 문서 (메타 §4.2) | docs/roadmap/final-mvp-roadmap.md | — | roadmap |
 | 품질 게이트: ruff/mypy strict/pytest/cov (메타 §16) | pyproject 설정 | CI 워크플로 | README 재현 명령 |
 
+| 시장 맥락 → 공통 위험 오늘의 변화 (§15.3) | `orchestrator.py` adverse_market_tags, `risk_mapper.py` | `tests/contract/test_briefing_contract.py::test_market_context_negative_marks_risk_deterioration` | INPUT_TEMPLATE MARKET_CONTEXT |
+| 반대 증거 항상 표시·사실/해석 라벨·포트폴리오 헤드라인 (§5.3, §8.7) | `briefing_composer._stock_section`, `orchestrator._portfolio_headline` | `TestBriefingQualityContract` 7종 | OUTPUT_TEMPLATE |
+| LLM 어댑터 엄격 JSON 계약 (메타 §9) | `adapters/prompt_analysis_engine.py` | `tests/unit/test_prompt_analysis_engine.py` | prompts/event_extraction.md |
+
 미충족 항목: 없음 (단, "실제 LLM 연동"은 의도적으로 범위 제외 — assumptions 참조)

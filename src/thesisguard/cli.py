@@ -58,12 +58,11 @@ def cmd_analyze(argv: list[str]) -> int:
         from thesisguard.application.orchestrator import run_analysis
 
         result = run_analysis(pack, FixtureAnalysisEngine())
-    except (PackValidationError, ThesisGuardError, Exception) as exc:
-        if isinstance(exc, Exception) and not isinstance(exc, ThesisGuardError):
-            name = type(exc).__name__
-            print(f"분석 오류({name}): {exc}", file=sys.stderr)
-        else:
-            print(f"분석 오류: {exc}", file=sys.stderr)
+    except ThesisGuardError as exc:
+        print(f"분석 오류: {exc}", file=sys.stderr)
+        return EXIT_FAILURE
+    except Exception as exc:  # noqa: BLE001 - CLI must not leak tracebacks
+        print(f"내부 오류({type(exc).__name__}): {exc}", file=sys.stderr)
         return EXIT_FAILURE
     json_path, md_path = write_outputs(result.report, output_dir)
     audit_path = output_dir / "audit.json"

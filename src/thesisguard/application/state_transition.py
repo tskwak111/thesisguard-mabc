@@ -67,7 +67,7 @@ def decide_state(
                 stock_code=stock_code,
                 previous_state=prev_state,
                 new_state=ThesisState.HOLD,
-                reasons=("previous state is HOLD; weak signals do not resolve the conflict",),
+                reasons=("이전 상태가 판단 보류이며, 약한 신호만으로는 해소되지 않습니다",),
             )
         negatives = [
             e
@@ -79,14 +79,14 @@ def decide_state(
                 stock_code=stock_code,
                 previous_state=prev_state,
                 new_state=ThesisState.WATCH,
-                reasons=("credible but not fully confirmed negative signal; watch only",),
+                reasons=("신뢰도는 있으나 확인 수준이 낮은 부정 신호로 관찰 필요",),
                 evidence_ids_used=tuple(e.evidence_id for e in negatives),
             )
         return StateDecision(
             stock_code=stock_code,
             previous_state=prev_state,
             new_state=ThesisState.MAINTAIN,
-            reasons=("no strong new material evidence; state maintained",),
+            reasons=("중요한 신규 강증거가 없어 상태를 유지합니다",),
         )
 
     strengthens = [e for e in strong if e.direction is EvidenceDirection.STRENGTHEN]
@@ -115,18 +115,18 @@ def decide_state(
     ]
 
     if strengthens and weakens:
-        reasons.append("conflicting strong strengthen/weaken evidence; judgment held")
+        reasons.append("강한 강화·약화 증거가 상충하여 판단을 보류합니다")
         used.extend(e.evidence_id for e in strengthens + weakens)
         decision = _result(ThesisState.HOLD)
         return decision.model_copy(update={"hold_reasons": tuple(reasons)})
 
     if review_hit:
-        reasons.append("user-defined review condition met by direct Tier A evidence")
+        reasons.append("사용자가 설정한 재검토 조건을 Tier A 직접 증거가 충족했습니다")
         used.append(review_hit[0].evidence_id)
         return _result(ThesisState.REVIEW_REQUIRED)
 
     if weakens:
-        reasons.append("direct high-credibility contrary evidence on core assumption")
+        reasons.append("핵심 가정에 반하는 고신뢰 직접 증거가 확인되었습니다")
         used.extend(e.evidence_id for e in weakens)
         target = ThesisState.WEAKENED
     elif strengthens:
@@ -139,9 +139,9 @@ def decide_state(
                 stock_code=stock_code,
                 previous_state=prev_state,
                 new_state=ThesisState.MAINTAIN,
-                reasons=("strengthen evidence lacks official/multi confirmation",),
+                reasons=("강화 증거가 공식·복수 확인 요건을 충족하지 않습니다",),
             )
-        reasons.append("official or independently confirmed supporting evidence")
+        reasons.append("공식 출처 또는 독립 복수 확인된 지지 증거가 확인되었습니다")
         used.extend(e.evidence_id for e in strengthens)
         target = ThesisState.STRENGTHENED
     else:
@@ -160,9 +160,7 @@ def decide_state(
         and not (has_tier_a_direct or target is ThesisState.STRENGTHENED)
     ):
         clamped = _step_toward(prev_state, target)
-        reasons.append(
-            f"one-step-per-day gate applied: {target.value} downgraded to {clamped.value}"
-        )
+        reasons.append(f"1일 1단계 게이트 적용: {target.korean} → {clamped.korean}")
         return _result(clamped)
     return _result(target)
 

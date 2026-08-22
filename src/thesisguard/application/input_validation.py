@@ -52,6 +52,11 @@ QUESTION_PORTFOLIO_MISSING = "보유·관심 종목 목록(종목명/종목코�
 QUESTION_PREVIOUS_STATE_MISSING = "종목별 이전 논지 상태 또는 '첫 실행' 여부를 알려주세요."
 
 
+def _missing_thesis_card_codes(pack: DailyEvidencePack) -> list[str]:
+    card_codes = {card.stock_code for card in pack.thesis_cards}
+    return [p.stock_code for p in pack.portfolio if p.stock_code not in card_codes]
+
+
 def validate_pack(pack: DailyEvidencePack) -> ValidationReport:
     errors: list[str] = []
     warnings: list[Warning_] = []
@@ -90,6 +95,11 @@ def validate_pack(pack: DailyEvidencePack) -> ValidationReport:
         questions.append(QUESTION_SOURCES_MISSING)
     if not pack.thesis_cards:
         questions.append(QUESTION_THESIS_MISSING)
+    missing_cards = _missing_thesis_card_codes(pack)
+    if missing_cards:
+        questions.append(
+            f"다음 종목의 투자논지 카드가 없습니다: {', '.join(missing_cards)}. 핵심 가정을 제공해 주세요."
+        )
     if not pack.portfolio:
         questions.append(QUESTION_PORTFOLIO_MISSING)
     if not pack.previous_states and not pack.first_run:

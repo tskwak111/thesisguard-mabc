@@ -90,7 +90,26 @@
       "last_briefing_at": "2026-08-21T18:00:00+09:00"
     }
   ],
-  "market_context": [],
+  "market_context": [
+    {
+      "indicator": "KOSPI",
+      "value_or_change": "-0.5%",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "source_id": "N002",
+      "risk_factor_tags": [],
+      "change_direction": "NEUTRAL"
+    },
+    {
+      "indicator": "AI 데이터센터 신규 수주 지표(가상)",
+      "value_or_change": "전월 대비 -8%",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "source_id": "N002",
+      "risk_factor_tags": [
+        "ai_theme"
+      ],
+      "change_direction": "NEGATIVE"
+    }
+  ],
   "today_sources": [
     {
       "source_id": "N001",
@@ -132,9 +151,9 @@
       "collected_at": "2026-08-22T18:00:00+09:00",
       "as_of": "2026-08-22T15:30:00+09:00",
       "tier": "B",
-      "title": "시황: 반도체 주 소폭 상승",
-      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다.",
-      "content_hash": "9c0c81c4d7d73e2c8aa2d847e36e9208f1a864fd9e1be462d9f987ed3b81eb83",
+      "title": "AI 데이터센터 신규 수주 지표 둔화(가상)",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 신규 수주 지표가 전월 대비 감소했다.",
+      "content_hash": "26672b7a3b0cc9c5d2392f8faecdb15a2deb4c143b5c05b048d04d83ed1fb8d8",
       "event_facts": []
     }
   ]

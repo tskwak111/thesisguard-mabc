@@ -156,20 +156,41 @@ def write(case: str, pack: dict) -> None:
 
 
 # 1. normal: Tier A direct positive on core assumption -> STRENGTHENED
-write(
-    "normal",
-    base_pack(
-        [
-            src(
-                "N001",
-                "가상전자, AI 데이터센터 장기 공급계약 체결",
-                BODY + " 가상전자가 AI 데이터센터 투자 계약을 체결했다.",
-                event_facts=[fact("AI 데이터센터 장기 공급계약 체결", ["ai_capex"], "POSITIVE")],
-            ),
-            src("N002", "시황: 반도체 주 소폭 상승", BODY, tier="B", doc_type="NEWS"),
-        ]
+_normal_sources = [
+    src(
+        "N001",
+        "가상전자, AI 데이터센터 장기 공급계약 체결",
+        BODY + " 가상전자가 AI 데이터센터 투자 계약을 체결했다.",
+        event_facts=[fact("AI 데이터센터 장기 공급계약 체결", ["ai_capex"], "POSITIVE")],
     ),
-)
+    src(
+        "N002",
+        "AI 데이터센터 신규 수주 지표 둔화(가상)",
+        BODY + " 신규 수주 지표가 전월 대비 감소했다.",
+        tier="B",
+        doc_type="NEWS",
+    ),
+]
+_normal_pack = base_pack(_normal_sources)
+_normal_pack["market_context"] = [
+    {
+        "indicator": "KOSPI",
+        "value_or_change": "-0.5%",
+        "as_of": "2026-08-22T15:30:00+09:00",
+        "source_id": "N002",
+        "risk_factor_tags": [],
+        "change_direction": "NEUTRAL",
+    },
+    {
+        "indicator": "AI 데이터센터 신규 수주 지표(가상)",
+        "value_or_change": "전월 대비 -8%",
+        "as_of": "2026-08-22T15:30:00+09:00",
+        "source_id": "N002",
+        "risk_factor_tags": ["ai_theme"],
+        "change_direction": "NEGATIVE",
+    },
+]
+write("normal", _normal_pack)
 
 # 2. no_change: many articles but no structured new facts
 write(

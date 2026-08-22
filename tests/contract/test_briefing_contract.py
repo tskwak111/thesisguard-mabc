@@ -60,7 +60,8 @@ def _pack(sources: list[dict[str, Any]], **over: Any) -> dict[str, Any]:
         "briefing_as_of": "2026-08-22T18:00:00+09:00",
         "first_run": False,
         "portfolio": [
-            {"stock_code": "A000000", "stock_name": "가상전자", "kind": "HOLDING", "weight": 40}
+            {"stock_code": "A000000", "stock_name": "가상전자", "kind": "HOLDING", "weight": 40},
+            {"stock_code": "B000000", "stock_name": "가상전력", "kind": "WATCH"},
         ],
         "thesis_cards": [
             {
@@ -75,7 +76,21 @@ def _pack(sources: list[dict[str, Any]], **over: Any) -> dict[str, Any]:
                     {"id": "REV-1", "text": "투자 축소", "concept_tags": ["capex_cut"]}
                 ],
                 "risk_factors": ["ai_theme"],
-            }
+            },
+            {
+                "stock_code": "B000000",
+                "stock_name": "가상전력",
+                "summary": "AI 데이터센터 전력 수요 논지",
+                "approved_version": "v1",
+                "core_assumptions": [
+                    {
+                        "id": "ASM-B1",
+                        "text": "데이터센터 전력 수요 증가",
+                        "concept_tags": ["dc_power"],
+                    }
+                ],
+                "risk_factors": ["ai_theme"],
+            },
         ],
         "previous_states": [
             {
@@ -171,3 +186,63 @@ def parse_pack_helper(data: dict[str, Any]) -> Any:
     from thesisguard.application.input_validation import parse_pack
 
     return parse_pack(data)
+
+
+class TestBriefingQualityContract:
+    """AAA-quality output contracts: opposing evidence, labels, portfolio headline."""
+
+    @pytest.fixture()
+    def result(self) -> Any:
+        pack = parse_pack_helper(_pack([_src("S001", "AI 투자 계약 공시", BODY_OK)]))
+        return run_analysis(pack, FixtureAnalysisEngine())
+
+    def test_opposing_evidence_line_always_present(self, result: Any) -> None:
+        for section in result.markdown.split("### ")[1:]:
+            body = section.split("\n")
+            name_line = body[0]
+            if "— " not in name_line:
+                continue
+            joined = "\n".join(body)
+            assert "- 반대 또는 제한 증거:" in joined, f"missing in {name_line}"
+
+    def test_interpretation_label_present(self, result: Any) -> None:
+        assert "투자논지 영향(해석):" in result.markdown
+
+    def test_headline_is_portfolio_level_not_key_change_echo(self, result: Any) -> None:
+        kc = result.report.key_changes[0]
+        assert result.report.headline != kc.description
+        assert "핵심 변화" in result.report.headline
+
+    def test_state_transition_label_shown(self, result: Any) -> None:
+        holding = result.report.holdings[0]
+        assert holding.previous_state_label == "유지 → 강화됨"
+        assert "상태 변화: 유지 → 강화됨" in result.markdown
+
+    def test_watchlist_condition_access_line(self, result: Any) -> None:
+        watch = next(w for w in result.report.watchlist if w.stock_code == "B000000")
+        assert watch.condition_access
+        assert "관심 조건 접근 여부:" in result.markdown
+
+    def test_market_context_negative_marks_risk_deterioration(self) -> None:
+        data = _pack([_src("S001", "AI 투자 계약 공시", BODY_OK)])
+        data["market_context"] = [
+            {
+                "indicator": "AI 데이터센터 신규 수주 지표(가상)",
+                "value_or_change": "전월 대비 -8%",
+                "as_of": "2026-08-22T15:30:00+09:00",
+                "source_id": "S001",
+                "risk_factor_tags": ["ai_theme"],
+                "change_direction": "NEGATIVE",
+            }
+        ]
+        result = run_analysis(parse_pack_helper(data), FixtureAnalysisEngine())
+        risk_lines = [
+            ln for ln in result.markdown.splitlines() if ln.startswith("- [") and "]" in ln
+        ]
+        assert any("오늘 악화" in ln for ln in risk_lines)
+
+    def test_non_advice_question_does_not_trigger_refusal(self) -> None:
+        data = _pack([_src("S001", "AI 투자 계약 공시", BODY_OK)])
+        data["user_question"] = "오늘 브리핑을 요약해줘"
+        result = run_analysis(parse_pack_helper(data), FixtureAnalysisEngine())
+        assert "매수·매도 여부에 대한 답변은 제공하지 않습니다" not in result.markdown
