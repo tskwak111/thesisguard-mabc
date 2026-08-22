@@ -16,8 +16,8 @@ class ProhibitionCategory(StrEnum):
 
 # Lines containing any of these markers are safety disclaimers, not advice.
 ALLOWLIST_MARKERS: tuple[str, ...] = (
-    "지시가 아님",
-    "제공하지 않습니다",
+    "지시가 아닙",
+    "제공하지 않",
     "권하지 않습니다",
     "권고하지 않습니다",
 )

@@ -52,18 +52,19 @@ def _transitionable(link: EvidenceLink) -> bool:
 
 
 def decide_state(
-    previous: PreviousState,
+    previous: PreviousState | None,
     evidences: list[EvidenceLink],
     briefing_as_of: datetime,
 ) -> StateDecision:
-    prev_state = previous.state
+    prev_state = previous.state if previous else None
+    stock_code = previous.stock_code if previous is not None else "UNKNOWN"
     usable = [e for e in evidences if _transitionable(e)]
     strong = [e for e in usable if _is_strong(e)]
 
     if not strong:
         if prev_state is ThesisState.HOLD:
             return StateDecision(
-                stock_code=previous.stock_code,
+                stock_code=stock_code,
                 previous_state=prev_state,
                 new_state=ThesisState.HOLD,
                 reasons=("previous state is HOLD; weak signals do not resolve the conflict",),
@@ -75,14 +76,14 @@ def decide_state(
         ]
         if negatives:
             return StateDecision(
-                stock_code=previous.stock_code,
+                stock_code=stock_code,
                 previous_state=prev_state,
                 new_state=ThesisState.WATCH,
                 reasons=("credible but not fully confirmed negative signal; watch only",),
                 evidence_ids_used=tuple(e.evidence_id for e in negatives),
             )
         return StateDecision(
-            stock_code=previous.stock_code,
+            stock_code=stock_code,
             previous_state=prev_state,
             new_state=ThesisState.MAINTAIN,
             reasons=("no strong new material evidence; state maintained",),
@@ -96,7 +97,7 @@ def decide_state(
 
     def _result(state: ThesisState) -> StateDecision:
         return StateDecision(
-            stock_code=previous.stock_code,
+            stock_code=stock_code,
             previous_state=prev_state,
             new_state=state,
             reasons=tuple(reasons),
@@ -135,7 +136,7 @@ def decide_state(
         )
         if not gate_ok:
             return StateDecision(
-                stock_code=previous.stock_code,
+                stock_code=stock_code,
                 previous_state=prev_state,
                 new_state=ThesisState.MAINTAIN,
                 reasons=("strengthen evidence lacks official/multi confirmation",),
