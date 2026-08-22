@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EventCandidate list",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["source_id","tier","published_at","issuer","action","event_type","event_date","polarity_hint"],
+    "properties": {
+      "source_id": {"type":"string"},
+      "tier": {"enum":["A","B","C","D"]},
+      "published_at": {"type":"string","format":"date-time"},
+      "issuer": {"type":"string"},
+      "action": {"type":"string"},
+      "event_type": {"type":"string"},
+      "entities": {"type":"array","items":{"type":"string"}},
+      "event_date": {"type":"string","format":"date-time"},
+      "key_figures": {"type":"array","items":{"type":"string"}},
+      "conditions": {"type":["string","null"]},
+      "concepts": {"type":"array","items":{"type":"string"}},
+      "polarity_hint": {"enum":["POSITIVE","NEGATIVE","MIXED","NEUTRAL","UNKNOWN"]},
+      "quotes": {"type":"array","items":{"type":"string"}}
+    }
+  }
+}
