@@ -8,8 +8,6 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
-
 from thesisguard.domain.enums import (
     ConfirmationLevel,
     Directness,
@@ -21,7 +19,7 @@ from thesisguard.domain.enums import (
     ladder_distance,
 )
 from thesisguard.domain.evidence import EvidenceLink
-from thesisguard.domain.state import PreviousState
+from thesisguard.domain.state import PreviousState, StateDecision
 
 _TRANSITION_NOVELTIES = {Novelty.NEW, Novelty.UPDATE}
 _RELEVANCES = {
@@ -29,17 +27,6 @@ _RELEVANCES = {
     Relevance.STRENGTHEN_CONDITION,
     Relevance.REVIEW_CONDITION,
 }
-
-
-class StateDecision(BaseModel):
-    model_config = ConfigDict(frozen=True)
-
-    stock_code: str
-    previous_state: ThesisState | None
-    new_state: ThesisState
-    reasons: tuple[str, ...] = ()
-    evidence_ids_used: tuple[str, ...] = ()
-    hold_reasons: tuple[str, ...] = ()
 
 
 def _is_strong(link: EvidenceLink) -> bool:

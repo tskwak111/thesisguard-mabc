@@ -32,6 +32,7 @@ class EvidenceLink(BaseModel):
     tier: SourceTier
     impact_horizon: ImpactHorizon = ImpactHorizon.MEDIUM
     source_ids: tuple[str, ...] = ()
+    matched_concepts: tuple[str, ...] = ()
     quote_refs: tuple[str, ...] = ()
     review_trigger_met: bool = False
     opposing_evidence_ids: tuple[str, ...] = ()

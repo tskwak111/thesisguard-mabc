@@ -103,6 +103,13 @@ class EvidenceMapper:
                 best = (Relevance.CONTEXT, None)
 
         relevance, target_id = best if best else (Relevance.UNRELATED, None)
+        matched: tuple[str, ...] = ()
+        if best is not None:
+            matched = (
+                tuple(sorted(concepts & set(card.risk_factors)))
+                if relevance is Relevance.CONTEXT
+                else event.concepts
+            )
 
         rep_tier = event.candidates[0].tier if event.candidates else SourceTier.D
         direction = _DIRECTION_BY_POLARITY[event.polarity_hint]
@@ -133,6 +140,7 @@ class EvidenceMapper:
             tier=rep_tier,
             impact_horizon=horizon,
             source_ids=event.member_source_ids,
+            matched_concepts=matched,
             quote_refs=event.candidates[0].quotes if event.candidates else (),
             review_trigger_met=review_trigger_met,
         )

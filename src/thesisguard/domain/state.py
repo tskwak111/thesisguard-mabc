@@ -16,3 +16,16 @@ class PreviousState(BaseModel):
     state: ThesisState | None = None
     known_event_keys: tuple[str, ...] = ()
     last_briefing_at: AwareDatetime | None = None
+
+
+class StateDecision(BaseModel):
+    """Outcome of the deterministic transition engine for one stock."""
+
+    model_config = ConfigDict(frozen=True)
+
+    stock_code: str
+    previous_state: ThesisState | None = None
+    new_state: ThesisState
+    reasons: tuple[str, ...] = ()
+    evidence_ids_used: tuple[str, ...] = ()
+    hold_reasons: tuple[str, ...] = ()
