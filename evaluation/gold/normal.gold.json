@@ -1,0 +1,10 @@
+{
+  "case": "normal",
+  "expected_states": {
+    "A000000": "STRENGTHENED",
+    "B000000": "MAINTAIN"
+  },
+  "core_event_actions": [
+    "AI 데이터센터 장기 공급계약 체결"
+  ]
+}

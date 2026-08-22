@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.0",
+  "briefing_as_of": "2026-08-22T18:00:00+09:00",
+  "first_run": false,
+  "portfolio": [
+    {
+      "stock_code": "A000000",
+      "stock_name": "가상전자",
+      "market": "KRX",
+      "kind": "HOLDING",
+      "weight": 40
+    },
+    {
+      "stock_code": "B000000",
+      "stock_name": "가상전력",
+      "kind": "WATCH"
+    }
+  ],
+  "thesis_cards": [
+    {
+      "stock_code": "A000000",
+      "stock_name": "가상전자",
+      "summary": "AI 서버 수요 증가로 고부가 메모리 논지 유지 (FICTIONAL TEST DATA)",
+      "approved_version": "v1",
+      "core_assumptions": [
+        {
+          "id": "ASM-A1",
+          "text": "AI 데이터센터 투자가 중기적으로 증가한다.",
+          "concept_tags": [
+            "ai_capex"
+          ]
+        }
+      ],
+      "strengthen_conditions": [
+        {
+          "id": "STR-A1",
+          "text": "고객사 AI 설비투자 가이던스 상향",
+          "concept_tags": [
+            "guidance_up"
+          ]
+        }
+      ],
+      "review_conditions": [
+        {
+          "id": "REV-A1",
+          "text": "AI 설비투자 축소 발표",
+          "concept_tags": [
+            "capex_cut"
+          ]
+        }
+      ],
+      "tracked_indicators": [],
+      "risk_factors": [
+        "ai_theme"
+      ]
+    },
+    {
+      "stock_code": "B000000",
+      "stock_name": "가상전력",
+      "summary": "AI 데이터센터 확장에 따른 전력 수요 논지 (FICTIONAL TEST DATA)",
+      "approved_version": "v1",
+      "core_assumptions": [
+        {
+          "id": "ASM-B1",
+          "text": "데이터센터 전력 수요가 증가한다.",
+          "concept_tags": [
+            "dc_power"
+          ]
+        }
+      ],
+      "strengthen_conditions": [],
+      "review_conditions": [],
+      "tracked_indicators": [],
+      "risk_factors": [
+        "ai_theme"
+      ]
+    }
+  ],
+  "previous_states": [
+    {
+      "stock_code": "A000000",
+      "state": "MAINTAIN",
+      "known_event_keys": [],
+      "last_briefing_at": "2026-08-21T18:00:00+09:00"
+    },
+    {
+      "stock_code": "B000000",
+      "state": "MAINTAIN",
+      "known_event_keys": [],
+      "last_briefing_at": "2026-08-21T18:00:00+09:00"
+    }
+  ],
+  "market_context": [],
+  "today_sources": [
+    {
+      "source_id": "M001",
+      "publisher": "출처-M001",
+      "url_or_id": "https://example.invalid/M001",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "반도체 업황 기사 1",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 반도체 시황 요약 1.",
+      "content_hash": "a8adffd50341faa6a47ba82fd50897494743cf9008f969d72b5a78b1917086c7",
+      "event_facts": []
+    },
+    {
+      "source_id": "M002",
+      "publisher": "출처-M002",
+      "url_or_id": "https://example.invalid/M002",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "반도체 업황 기사 2",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 반도체 시황 요약 2.",
+      "content_hash": "d83eacd0ea8cb75a0b28422ef0464ae8f1b706a04bcdd9f5cd3aaa1a450d07f9",
+      "event_facts": []
+    },
+    {
+      "source_id": "M003",
+      "publisher": "출처-M003",
+      "url_or_id": "https://example.invalid/M003",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "반도체 업황 기사 3",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 반도체 시황 요약 3.",
+      "content_hash": "f84e7c88012ac86ea6e5524f570845d82552003044cf02707d33793a9ff11f04",
+      "event_facts": []
+    },
+    {
+      "source_id": "M004",
+      "publisher": "출처-M004",
+      "url_or_id": "https://example.invalid/M004",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "반도체 업황 기사 4",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 반도체 시황 요약 4.",
+      "content_hash": "750ca3ec6ae1b2c690bfa71b91e809e9eba92bac37a7f2aa77b715c2d184d698",
+      "event_facts": []
+    },
+    {
+      "source_id": "M005",
+      "publisher": "출처-M005",
+      "url_or_id": "https://example.invalid/M005",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "반도체 업황 기사 5",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 반도체 시황 요약 5.",
+      "content_hash": "39c398956929c670472ec18b74e6239c4e133231f38b0a68a82150787041b571",
+      "event_facts": []
+    },
+    {
+      "source_id": "M006",
+      "publisher": "출처-M006",
+      "url_or_id": "https://example.invalid/M006",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "반도체 업황 기사 6",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 반도체 시황 요약 6.",
+      "content_hash": "d890dcdc050da6dd28d34bc0b7387564bc73b46b4f787ae8165da75ab1a7b3cb",
+      "event_facts": []
+    },
+    {
+      "source_id": "M007",
+      "publisher": "출처-M007",
+      "url_or_id": "https://example.invalid/M007",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "반도체 업황 기사 7",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 반도체 시황 요약 7.",
+      "content_hash": "f1daf3fc1dc820c2c45946e769a91f9c46b19cd8e7b5c3d9ca2ad66db7f221a3",
+      "event_facts": []
+    }
+  ]
+}

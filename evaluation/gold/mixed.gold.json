@@ -1,0 +1,7 @@
+{
+  "case": "mixed",
+  "expected_states": {
+    "A000000": "HOLD",
+    "B000000": "MAINTAIN"
+  }
+}

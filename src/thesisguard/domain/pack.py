@@ -33,6 +33,7 @@ class DailyEvidencePack(BaseModel):
     previous_states: tuple[PreviousState, ...] = ()
     market_context: tuple[MarketContextItem, ...] = ()
     today_sources: tuple[SourceDocument, ...] = ()
+    user_question: str | None = None
 
     def stocks(self) -> dict[str, str]:
         return {item.stock_code: item.stock_name for item in self.portfolio}

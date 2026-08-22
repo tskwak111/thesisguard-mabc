@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Final
 
 from pydantic import BaseModel, ConfigDict
 
@@ -52,6 +52,16 @@ _DIRECTION_KOREAN = {
     EvidenceDirection.NEUTRAL: "중립",
     EvidenceDirection.UNKNOWN: "판단 불가",
 }
+
+BUY_SELL_REFUSAL: Final = (
+    "매수·매도 여부에 대한 답변은 제공하지 않습니다. "
+    "본 에이전트는 투자 지시를 제공하지 않으며, 위 결과는 기존 투자논지에 대한 증거 정리입니다. "
+    "최종 판단은 사용자가 내려야 합니다."
+)
+
+
+def _buy_sell_refusal(question: str) -> str:
+    return f"사용자 질문({question.strip()})에 대하여: {BUY_SELL_REFUSAL}"
 
 
 class OrchestratorError(Exception):
@@ -132,10 +142,26 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
     from thesisguard.application.state_transition import decide_state
 
     decisions = []
+    unresolved_input = bool(validation.questions)
     for card in pack.thesis_cards:
         card_links = [link for link in relevant_links if link.stock_code == card.stock_code]
         prev = _prev_state_for(pack, card.stock_code)
-        decisions.append(decide_state(prev, card_links, pack.briefing_as_of))
+        decision = decide_state(prev, card_links, pack.briefing_as_of, stock_code=card.stock_code)
+        if (
+            unresolved_input
+            and prev is None
+            and decision.new_state.value in {"STRENGTHENED", "WEAKENED", "REVIEW_REQUIRED", "WATCH"}
+        ):
+            from thesisguard.domain.enums import ThesisState
+
+            decision = decision.model_copy(
+                update={
+                    "new_state": ThesisState.HOLD,
+                    "hold_reasons": decision.hold_reasons
+                    + ("입력 누락(이전 상태 등)으로 강한 판정을 보류합니다.",),
+                }
+            )
+        decisions.append(decision)
 
     # Skeptic gate: blockers downgrade strong transitions to HOLD (fail loud, not quiet)
     injection_flags: tuple[str, ...] = tuple(
@@ -304,6 +330,8 @@ def run_analysis(pack: DailyEvidencePack, engine: AnalysisEngine) -> Orchestrato
     for d in final_decisions:
         if d.new_state.value == "HOLD":
             hold_items.append(f"{d.stock_code}: " + ("; ".join(d.hold_reasons) or "판단 보류"))
+    if pack.user_question:
+        hold_items.append(_buy_sell_refusal(pack.user_question))
 
     unconfirmed = [s.source_id for s in pack.today_sources if s.tier == SourceTier.D]
     tier_d_texts = [

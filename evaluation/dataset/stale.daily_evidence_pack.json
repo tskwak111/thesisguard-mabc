@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "briefing_as_of": "2026-08-22T18:00:00+09:00",
+  "first_run": false,
+  "portfolio": [
+    {
+      "stock_code": "A000000",
+      "stock_name": "가상전자",
+      "market": "KRX",
+      "kind": "HOLDING",
+      "weight": 40
+    },
+    {
+      "stock_code": "B000000",
+      "stock_name": "가상전력",
+      "kind": "WATCH"
+    }
+  ],
+  "thesis_cards": [
+    {
+      "stock_code": "A000000",
+      "stock_name": "가상전자",
+      "summary": "AI 서버 수요 증가로 고부가 메모리 논지 유지 (FICTIONAL TEST DATA)",
+      "approved_version": "v1",
+      "core_assumptions": [
+        {
+          "id": "ASM-A1",
+          "text": "AI 데이터센터 투자가 중기적으로 증가한다.",
+          "concept_tags": [
+            "ai_capex"
+          ]
+        }
+      ],
+      "strengthen_conditions": [
+        {
+          "id": "STR-A1",
+          "text": "고객사 AI 설비투자 가이던스 상향",
+          "concept_tags": [
+            "guidance_up"
+          ]
+        }
+      ],
+      "review_conditions": [
+        {
+          "id": "REV-A1",
+          "text": "AI 설비투자 축소 발표",
+          "concept_tags": [
+            "capex_cut"
+          ]
+        }
+      ],
+      "tracked_indicators": [],
+      "risk_factors": [
+        "ai_theme"
+      ]
+    },
+    {
+      "stock_code": "B000000",
+      "stock_name": "가상전력",
+      "summary": "AI 데이터센터 확장에 따른 전력 수요 논지 (FICTIONAL TEST DATA)",
+      "approved_version": "v1",
+      "core_assumptions": [
+        {
+          "id": "ASM-B1",
+          "text": "데이터센터 전력 수요가 증가한다.",
+          "concept_tags": [
+            "dc_power"
+          ]
+        }
+      ],
+      "strengthen_conditions": [],
+      "review_conditions": [],
+      "tracked_indicators": [],
+      "risk_factors": [
+        "ai_theme"
+      ]
+    }
+  ],
+  "previous_states": [
+    {
+      "stock_code": "A000000",
+      "state": "MAINTAIN",
+      "known_event_keys": [],
+      "last_briefing_at": "2026-08-21T18:00:00+09:00"
+    },
+    {
+      "stock_code": "B000000",
+      "state": "MAINTAIN",
+      "known_event_keys": [],
+      "last_briefing_at": "2026-08-21T18:00:00+09:00"
+    }
+  ],
+  "market_context": [],
+  "today_sources": [
+    {
+      "source_id": "T001",
+      "publisher": "출처-T001",
+      "url_or_id": "https://example.invalid/T001",
+      "doc_type": "NEWS",
+      "published_at": "2026-07-01T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "(재게시) 7월 AI 투자 계약 기사",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 과거 기사 재노출.",
+      "content_hash": "1506d3690a1649f4f481378cc9332b5f03bf8d24fe6e945ea6c6dcffd463c114",
+      "event_facts": [
+        {
+          "issuer": "가상전자",
+          "action": "AI 데이터센터 계약 체결 (과거 사건)",
+          "entities": [
+            "가상전자"
+          ],
+          "event_type": "ANNOUNCEMENT",
+          "event_date": "2026-07-01T09:00:00+09:00",
+          "key_figures": [],
+          "conditions": null,
+          "concepts": [
+            "ai_capex"
+          ],
+          "polarity_hint": "POSITIVE",
+          "quotes": []
+        }
+      ]
+    }
+  ]
+}

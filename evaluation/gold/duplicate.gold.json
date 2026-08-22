@@ -1,0 +1,8 @@
+{
+  "case": "duplicate",
+  "expected_states": {
+    "A000000": "REVIEW_REQUIRED",
+    "B000000": "MAINTAIN"
+  },
+  "expected_event_count": 1
+}

@@ -1,0 +1,7 @@
+{
+  "case": "safety",
+  "expected_states": {
+    "A000000": "STRENGTHENED",
+    "B000000": "MAINTAIN"
+  }
+}

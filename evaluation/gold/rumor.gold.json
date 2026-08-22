@@ -1,0 +1,7 @@
+{
+  "case": "rumor",
+  "expected_states": {
+    "A000000": "MAINTAIN",
+    "B000000": "MAINTAIN"
+  }
+}

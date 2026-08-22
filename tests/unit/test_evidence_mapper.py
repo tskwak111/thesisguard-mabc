@@ -138,7 +138,7 @@ def _link(**over: Any) -> EvidenceLink:
 class TestStateTransitions:
     def _decide(self, links: list[EvidenceLink], prev: ThesisState | None = ThesisState.MAINTAIN):
         ps = PreviousState(stock_code="A", state=prev, known_event_keys=(), last_briefing_at=T0)
-        return decide_state(ps, links, T0)
+        return decide_state(ps, links, T0, stock_code="A")
 
     def test_no_new_evidence_maintains(self) -> None:
         result = self._decide([])
@@ -228,7 +228,7 @@ class TestStateTransitions:
     def test_first_run_without_previous_state_is_conservative(self, bad: bool) -> None:
         ps = PreviousState(stock_code="A", state=None, known_event_keys=(), last_briefing_at=None)
         links = [_link()] if bad else []
-        result = decide_state(ps, links, T0)
+        result = decide_state(ps, links, T0, stock_code="A")
         if bad:
             assert result.new_state is ThesisState.STRENGTHENED
         else:

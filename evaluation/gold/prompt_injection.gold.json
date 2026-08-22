@@ -1,0 +1,8 @@
+{
+  "case": "prompt_injection",
+  "expected_states": {
+    "A000000": "MAINTAIN",
+    "B000000": "MAINTAIN"
+  },
+  "note": "Tier B 단일 출처는 강화 게이트를 통과하지 못함(보수적 설계)"
+}

@@ -1,0 +1,282 @@
+{
+  "schema_version": "1.0",
+  "briefing_as_of": "2026-08-22T18:00:00+09:00",
+  "first_run": false,
+  "portfolio": [
+    {
+      "stock_code": "A000000",
+      "stock_name": "가상전자",
+      "market": "KRX",
+      "kind": "HOLDING",
+      "weight": 40
+    },
+    {
+      "stock_code": "B000000",
+      "stock_name": "가상전력",
+      "kind": "WATCH"
+    }
+  ],
+  "thesis_cards": [
+    {
+      "stock_code": "A000000",
+      "stock_name": "가상전자",
+      "summary": "AI 서버 수요 증가로 고부가 메모리 논지 유지 (FICTIONAL TEST DATA)",
+      "approved_version": "v1",
+      "core_assumptions": [
+        {
+          "id": "ASM-A1",
+          "text": "AI 데이터센터 투자가 중기적으로 증가한다.",
+          "concept_tags": [
+            "ai_capex"
+          ]
+        }
+      ],
+      "strengthen_conditions": [
+        {
+          "id": "STR-A1",
+          "text": "고객사 AI 설비투자 가이던스 상향",
+          "concept_tags": [
+            "guidance_up"
+          ]
+        }
+      ],
+      "review_conditions": [
+        {
+          "id": "REV-A1",
+          "text": "AI 설비투자 축소 발표",
+          "concept_tags": [
+            "capex_cut"
+          ]
+        }
+      ],
+      "tracked_indicators": [],
+      "risk_factors": [
+        "ai_theme"
+      ]
+    },
+    {
+      "stock_code": "B000000",
+      "stock_name": "가상전력",
+      "summary": "AI 데이터센터 확장에 따른 전력 수요 논지 (FICTIONAL TEST DATA)",
+      "approved_version": "v1",
+      "core_assumptions": [
+        {
+          "id": "ASM-B1",
+          "text": "데이터센터 전력 수요가 증가한다.",
+          "concept_tags": [
+            "dc_power"
+          ]
+        }
+      ],
+      "strengthen_conditions": [],
+      "review_conditions": [],
+      "tracked_indicators": [],
+      "risk_factors": [
+        "ai_theme"
+      ]
+    }
+  ],
+  "previous_states": [
+    {
+      "stock_code": "A000000",
+      "state": "MAINTAIN",
+      "known_event_keys": [],
+      "last_briefing_at": "2026-08-21T18:00:00+09:00"
+    },
+    {
+      "stock_code": "B000000",
+      "state": "MAINTAIN",
+      "known_event_keys": [],
+      "last_briefing_at": "2026-08-21T18:00:00+09:00"
+    }
+  ],
+  "market_context": [],
+  "today_sources": [
+    {
+      "source_id": "D001",
+      "publisher": "가상전자 IR",
+      "url_or_id": "https://example.invalid/D001",
+      "doc_type": "FILING",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "A",
+      "title": "[1] 가상전자 보도자료 전재",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 동일 보도자료 전재 1.",
+      "content_hash": "c4d603617372140a79a2ebcbcf65cc2b814bd1a3e56f2f4614d0c4748c7f0686",
+      "event_facts": [
+        {
+          "issuer": "가상전자",
+          "action": "신규 AI 캠퍼스 투자 축소 발표",
+          "entities": [
+            "가상전자"
+          ],
+          "event_type": "PRESS_RELEASE",
+          "event_date": "2026-08-21T09:00:00+09:00",
+          "key_figures": [],
+          "conditions": null,
+          "concepts": [
+            "capex_cut"
+          ],
+          "polarity_hint": "NEGATIVE",
+          "quotes": []
+        }
+      ]
+    },
+    {
+      "source_id": "D002",
+      "publisher": "언론사2",
+      "url_or_id": "https://example.invalid/D002",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "[2] 가상전자 보도자료 전재",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 동일 보도자료 전재 2.",
+      "content_hash": "ec5d5dfa2503180bab6828a75a971443f8bff830f635d2881e015bc50c09b5f0",
+      "event_facts": [
+        {
+          "issuer": "가상전자",
+          "action": "신규 AI 캠퍼스 투자 축소 발표",
+          "entities": [
+            "가상전자"
+          ],
+          "event_type": "PRESS_RELEASE",
+          "event_date": "2026-08-21T09:00:00+09:00",
+          "key_figures": [],
+          "conditions": null,
+          "concepts": [
+            "capex_cut"
+          ],
+          "polarity_hint": "NEGATIVE",
+          "quotes": []
+        }
+      ]
+    },
+    {
+      "source_id": "D003",
+      "publisher": "언론사3",
+      "url_or_id": "https://example.invalid/D003",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "[3] 가상전자 보도자료 전재",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 동일 보도자료 전재 3.",
+      "content_hash": "3e44a14538e18db26ce277e2ff10ff0b3cc251319b34d74b86fc45f8ef20ce96",
+      "event_facts": [
+        {
+          "issuer": "가상전자",
+          "action": "신규 AI 캠퍼스 투자 축소 발표",
+          "entities": [
+            "가상전자"
+          ],
+          "event_type": "PRESS_RELEASE",
+          "event_date": "2026-08-21T09:00:00+09:00",
+          "key_figures": [],
+          "conditions": null,
+          "concepts": [
+            "capex_cut"
+          ],
+          "polarity_hint": "NEGATIVE",
+          "quotes": []
+        }
+      ]
+    },
+    {
+      "source_id": "D004",
+      "publisher": "언론사4",
+      "url_or_id": "https://example.invalid/D004",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "[4] 가상전자 보도자료 전재",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 동일 보도자료 전재 4.",
+      "content_hash": "52f2e76002d711758f52678c1c6fb4b077b3e174349a848e8ffcabd513f7dfc1",
+      "event_facts": [
+        {
+          "issuer": "가상전자",
+          "action": "신규 AI 캠퍼스 투자 축소 발표",
+          "entities": [
+            "가상전자"
+          ],
+          "event_type": "PRESS_RELEASE",
+          "event_date": "2026-08-21T09:00:00+09:00",
+          "key_figures": [],
+          "conditions": null,
+          "concepts": [
+            "capex_cut"
+          ],
+          "polarity_hint": "NEGATIVE",
+          "quotes": []
+        }
+      ]
+    },
+    {
+      "source_id": "D005",
+      "publisher": "언론사5",
+      "url_or_id": "https://example.invalid/D005",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "[5] 가상전자 보도자료 전재",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 동일 보도자료 전재 5.",
+      "content_hash": "33633632a2268f6cad09940c7bf3e2d84009524c1a2d35b61b3d3b40fcb6de47",
+      "event_facts": [
+        {
+          "issuer": "가상전자",
+          "action": "신규 AI 캠퍼스 투자 축소 발표",
+          "entities": [
+            "가상전자"
+          ],
+          "event_type": "PRESS_RELEASE",
+          "event_date": "2026-08-21T09:00:00+09:00",
+          "key_figures": [],
+          "conditions": null,
+          "concepts": [
+            "capex_cut"
+          ],
+          "polarity_hint": "NEGATIVE",
+          "quotes": []
+        }
+      ]
+    },
+    {
+      "source_id": "D006",
+      "publisher": "언론사6",
+      "url_or_id": "https://example.invalid/D006",
+      "doc_type": "NEWS",
+      "published_at": "2026-08-21T09:00:00+09:00",
+      "collected_at": "2026-08-22T18:00:00+09:00",
+      "as_of": "2026-08-22T15:30:00+09:00",
+      "tier": "B",
+      "title": "[6] 가상전자 보도자료 전재",
+      "body": "FICTIONAL TEST DATA. 이 문서는 테스트용 가상 자료입니다. 동일 보도자료 전재 6.",
+      "content_hash": "0e5522c4e24651fd7dc0fa17e87cdab1672d913b3f8c09cb79b9bdf7a41b8e43",
+      "event_facts": [
+        {
+          "issuer": "가상전자",
+          "action": "신규 AI 캠퍼스 투자 축소 발표",
+          "entities": [
+            "가상전자"
+          ],
+          "event_type": "PRESS_RELEASE",
+          "event_date": "2026-08-21T09:00:00+09:00",
+          "key_figures": [],
+          "conditions": null,
+          "concepts": [
+            "capex_cut"
+          ],
+          "polarity_hint": "NEGATIVE",
+          "quotes": []
+        }
+      ]
+    }
+  ]
+}

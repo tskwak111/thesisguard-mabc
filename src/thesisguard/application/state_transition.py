@@ -55,9 +55,9 @@ def decide_state(
     previous: PreviousState | None,
     evidences: list[EvidenceLink],
     briefing_as_of: datetime,
+    stock_code: str = "UNKNOWN",
 ) -> StateDecision:
     prev_state = previous.state if previous else None
-    stock_code = previous.stock_code if previous is not None else "UNKNOWN"
     usable = [e for e in evidences if _transitionable(e)]
     strong = [e for e in usable if _is_strong(e)]
 
