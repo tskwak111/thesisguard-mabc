@@ -23,7 +23,7 @@
 | 감사 원장 (§11.12, 메타 §8 Step10) | `application/audit_ledger.py` | `tests/contract/test_audit_ledger.py` | JSON 결과 audit 필드 |
 | AnalysisEngine Port / 네트워크 없음 / Fixture 엔진 (메타 §9) | ports/adapters | 전체 테스트 스위트(오프라인) | TIMELY_SETUP.md |
 | CLI validate/analyze/evaluate/safety-check (메타 §13) | `cli.py` | `tests/integration/test_cli.py` + smoke 실행 증거 | README |
-| 평가 지표 10종 + 목표치 (§20.2, 메타 §12.2) | `evaluation/metrics.py`, `runner.py` | `tests/integration/test_evaluation.py` | `evaluation/README.md` |
+| 평가 지표 10종 + 목표치 (§20.2, 메타 §12.2) | `src/thesisguard/evaluation/{metrics,runner}.py`, 데이터는 `evaluation/{dataset,gold}` | `tests/integration/test_evaluation.py` | `evaluation/README.md` |
 | 가상 fixture FICTIONAL 표시 (메타 §12.1) | examples/* 모든 팩 | golden 테스트가 헤더 검증 | examples 헤더 |
 | Timely 스킬 산출물 4종 (메타 §10) | submission/timely/* | 수동 검토 + 로컬 파이프라인과 계약 일치 확인 | 제출 패키지 |
 | One Pager / 90초 데모 / 체크리스트 (메타 §14) | submission/*.md | 체크리스트 자체 검증 | 제출 패키지 |

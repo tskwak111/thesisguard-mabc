@@ -45,3 +45,12 @@ SDK 사양 확인 불가 → 추측 구현 금지(메타 §9). Timely AI용 프�
 
 ## A-13. 우선주 표기 등 한국어 표시명
 enum 내부값 영어, 사용자 표시명 한국어 매핑 테이블 단일 정의(`domain/enums.py`).
+
+## A-14. 평가 코드 위치
+메타프롬프트 권장 구조의 루트 `evaluation/metrics.py·runner.py`는 패키지 import 가능성을 위해 `src/thesisguard/evaluation/`으로 이동하고, 루트 `evaluation/`은 dataset·gold 데이터와 README만 유지.
+
+## A-15. duplicate 시나리오 기대 상태 정정
+동일 보도자료 전재 사건이 사용자의 명시적 재검토 조건(capex_cut)을 Tier A로 직접 충족하므로 WEAKENED가 아니라 REVIEW_REQUIRED가 설계 §14.6에 부합. 골드 라벨을 정정함(엔진 수정 아님).
+
+## A-16. prompt_injection 시나리오 기대 상태
+해당 팩의 유일한 긍정 근거는 Tier B 단일 출처라 STRENGTHENED 게이트(공식 또는 복수 확인)를 통과하지 못해 MAINTAIN이 보수적으로 올바름. 골드 라벨에 명시.

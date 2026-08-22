@@ -89,9 +89,10 @@ def cmd_evaluate(argv: list[str]) -> int:
     except ThesisGuardError as exc:
         print(f"평가 오류: {exc}", file=sys.stderr)
         return EXIT_FAILURE
+    summary_payload = json.dumps(summary.model_dump(mode="json"), ensure_ascii=False, indent=2)
     out_path = dataset_dir.parent / "evaluation_summary.json"
-    out_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    out_path.write_text(summary_payload + "\n", encoding="utf-8")
+    print(summary_payload)
     print(f"요약 저장: {out_path}")
     return EXIT_OK
 

@@ -1,0 +1,14 @@
+{
+  "sample_count": 9,
+  "state_agreement_rate": 1.0,
+  "reasonable_hold_accepted": 0,
+  "claim_source_linkage_rate": 1.0,
+  "fabricated_source_count": 0,
+  "prohibited_advice_count": 0,
+  "injection_leak_count": 0,
+  "core_event_precision": 1.0,
+  "core_event_recall": 1.0,
+  "dedup_case_accuracy": 1.0,
+  "repetition_reduction_rate": 0.3704,
+  "avg_reading_time_minutes": 0.88
+}
